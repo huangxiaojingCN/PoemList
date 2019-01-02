@@ -1,5 +1,13 @@
 package com.archpoem.poemlist;
 
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.util.Log;
+
+import com.archpoem.poemlist.model.Poem;
+
+import java.util.List;
+
 /**
  * Created by huangxiaojing on 02/01/2019.
  */
@@ -10,8 +18,17 @@ public class DataRepository {
 
     private final AppDatabase mAppDatabase;
 
+    private MediatorLiveData<List<Poem>> mPoemListLiveData;
+
     private DataRepository(AppDatabase appDatabase) {
         this.mAppDatabase = appDatabase;
+
+        mPoemListLiveData = new MediatorLiveData<>();
+
+        mPoemListLiveData.addSource(mAppDatabase.poemDao().loadAllPoems(),
+                poems -> {
+                    mPoemListLiveData.setValue(poems);
+                });
     }
 
     public static DataRepository getInstance(AppDatabase appDatabase) {
@@ -24,5 +41,9 @@ public class DataRepository {
         }
 
         return instance;
+    }
+
+    public MutableLiveData<List<Poem>> getPoemList() {
+        return mPoemListLiveData;
     }
 }

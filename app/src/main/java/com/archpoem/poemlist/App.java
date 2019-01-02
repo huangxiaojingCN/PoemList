@@ -19,10 +19,10 @@ public class App extends Application {
         this.mContext = this;
 
         mAppExecutors = new AppExecutors();
-        initDataRepository();
+        getDataRepository();
     }
 
-    public void initDataRepository() {
-        //DataRepository.getInstance(AppDatabase.getInstance(mContext,mAppExecutors));
+    public DataRepository getDataRepository() {
+        return DataRepository.getInstance(AppDatabase.getInstance(mContext,mAppExecutors));
     }
 }
