@@ -20,6 +20,8 @@ public class PoemAdapter extends RecyclerView.Adapter<PoemAdapter.PoemViewHodler
 
     private List<Poem> mPoems;
 
+    private onPoemItemListner mOnPoemItemListner;
+
     public void addData(List<Poem> poems) {
         this.mPoems = poems;
 
@@ -39,6 +41,12 @@ public class PoemAdapter extends RecyclerView.Adapter<PoemAdapter.PoemViewHodler
     @Override
     public void onBindViewHolder(@NonNull PoemViewHodler holder, int position) {
         holder.mTvPoem.setText(mPoems.get(position).getPoemContent());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (mOnPoemItemListner != null) {
+                mOnPoemItemListner.onPoemItemClick(holder.itemView, position, mPoems.get(position));
+            }
+        });
     }
 
     @Override
@@ -55,5 +63,14 @@ public class PoemAdapter extends RecyclerView.Adapter<PoemAdapter.PoemViewHodler
 
            mTvPoem = itemView.findViewById(R.id.tv_poem);
         }
+    }
+
+    public void setOnPoemItemClickListener(onPoemItemListner l) {
+        this.mOnPoemItemListner = l;
+    }
+
+    public interface onPoemItemListner {
+
+        void onPoemItemClick(View view, int position, Poem poem);
     }
 }

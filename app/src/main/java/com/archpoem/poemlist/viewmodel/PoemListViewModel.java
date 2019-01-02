@@ -26,6 +26,8 @@ public class PoemListViewModel extends AndroidViewModel {
 
     private MediatorLiveData<List<Poem>> mPoemListLiveData;
 
+    private MediatorLiveData<Poem> mPoemLiveData;
+
     public PoemListViewModel(@NonNull Application application) {
         super(application);
         this.mApplication = application;
@@ -49,5 +51,16 @@ public class PoemListViewModel extends AndroidViewModel {
 
     public MediatorLiveData<List<Poem>> getPoemList() {
         return mPoemListLiveData;
+    }
+
+    public MutableLiveData<Poem> loadPoemById(int id) {
+        if (mPoemLiveData == null) {
+            mPoemLiveData = new MediatorLiveData<>();
+        }
+        MutableLiveData<Poem> poemMutableLiveData = ((App) mApplication).getDataRepository().getPoemById(id);
+
+        mPoemLiveData.addSource(poemMutableLiveData, poem -> mPoemLiveData.setValue(poem));
+
+        return mPoemLiveData;
     }
 }

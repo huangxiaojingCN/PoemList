@@ -1,5 +1,6 @@
 package com.archpoem.poemlist;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
@@ -19,6 +20,8 @@ public class DataRepository {
     private final AppDatabase mAppDatabase;
 
     private MediatorLiveData<List<Poem>> mPoemListLiveData;
+
+    private MediatorLiveData<Poem> mPoemLiveData;
 
     private DataRepository(AppDatabase appDatabase) {
         this.mAppDatabase = appDatabase;
@@ -45,5 +48,16 @@ public class DataRepository {
 
     public MutableLiveData<List<Poem>> getPoemList() {
         return mPoemListLiveData;
+    }
+
+    public MutableLiveData<Poem> getPoemById(int id) {
+        if (mPoemLiveData == null) {
+            mPoemLiveData = new MediatorLiveData<>();
+        }
+
+        LiveData<Poem> poemLiveData = mAppDatabase.poemDao().loadPoemById(id);
+        mPoemLiveData.addSource(poemLiveData, poem -> mPoemLiveData.setValue(poem));
+
+        return mPoemLiveData;
     }
 }

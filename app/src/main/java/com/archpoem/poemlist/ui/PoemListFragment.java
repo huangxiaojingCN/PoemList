@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.archpoem.poemlist.MainActivity;
 import com.archpoem.poemlist.R;
+import com.archpoem.poemlist.model.Poem;
 import com.archpoem.poemlist.ui.adapter.PoemAdapter;
 import com.archpoem.poemlist.viewmodel.PoemListViewModel;
 
@@ -60,6 +62,8 @@ public class PoemListFragment extends Fragment {
         mPoemListView.setLayoutManager(linearLayoutManager);
         mPoemListView.setAdapter(mPoemAdapter);
 
+        mPoemAdapter.setOnPoemItemClickListener(onPoemItemListner);
+
         PoemListViewModel poemListViewModel
                 = ViewModelProviders.of(this).get(PoemListViewModel.class);
         subscribeOnUi(poemListViewModel);
@@ -70,4 +74,12 @@ public class PoemListFragment extends Fragment {
             mPoemAdapter.addData(poems);
         });
     }
+
+    private PoemAdapter.onPoemItemListner onPoemItemListner = new PoemAdapter.onPoemItemListner() {
+
+        @Override
+        public void onPoemItemClick(View view, int position, Poem poem) {
+            ((MainActivity)getActivity()).show(poem);
+        }
+    };
 }
